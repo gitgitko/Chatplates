@@ -6,7 +6,7 @@ PRESS THE GREEN CODE BUTTON
 
 Extract the zip and run the html file.
 
-NEEDS VSCODE OR PYSHELL TO RUN.
+NEEDS VSCODE OR PYTHON TO RUN.
 
 Create rooms or join the public room.
 
