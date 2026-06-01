@@ -1,5 +1,12 @@
 # Chatplates
 
 Hi. This github repo is something im using for Chatrooms.
-Here's the link:
+
+PRESS THE GREEN CODE BUTTON
+
+Extract the zip and run the html file.
+
+Create rooms or join the public room.
+
+
 
