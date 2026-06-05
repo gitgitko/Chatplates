@@ -258,29 +258,40 @@ function joinGuest(){
   connectWebSocket('guest', {type: 'auth', name});
 }
 
+// ========== FIXED WEBSOCKET CONNECTION (no "CONNECTING state" error) ==========
 function connectWebSocket(roomType, authMsg){
+  if(ws && ws.readyState === WebSocket.OPEN){
+    ws.close();
+  }
+
   let wsUrl;
   if(roomType === 'guest'){
     wsUrl = `${WS_URL}/guest`;
   } else {
     wsUrl = `${WS_URL}/public`;
   }
-  
+
   ws = new WebSocket(wsUrl);
-  
+
   ws.onopen = () => {
-    ws.send(JSON.stringify(authMsg));
+    // Wait until the connection is actually ready to send
+    const sendAuth = () => {
+      if(ws.readyState === WebSocket.OPEN){
+        ws.send(JSON.stringify(authMsg));
+      } else {
+        setTimeout(sendAuth, 10);
+      }
+    };
+    sendAuth();
   };
-  
+
   ws.onmessage = (e) => {
     const d = JSON.parse(e.data);
-    
     if(d.type === 'auth_ok'){
       myName = d.name;
       isOwner = d.is_owner;
       showChat();
-    } 
-    else if(d.type === 'auth_fail'){
+    } else if(d.type === 'auth_fail'){
       let errDiv;
       if(roomType === 'owner') errDiv = document.getElementById('ownerErr');
       else if(roomType === 'secret') errDiv = document.getElementById('secretErr');
@@ -288,46 +299,41 @@ function connectWebSocket(roomType, authMsg){
       errDiv.textContent = d.reason;
       ws.close();
       ws = null;
-    }
-    else if(d.type === 'message'){
+    } else if(d.type === 'message'){
       const tab = d.room || 'public';
       ensureTab(tab, tab === 'public' ? 'Public' : tab);
       addTabMsg(tab, d.sender, d.text, d.sender === myName ? 'me' : 'other', d.time);
-    }
-    else if(d.type === 'system'){
+    } else if(d.type === 'system'){
       const tab = d.room || activeTab;
       ensureTab(tab, tab === 'public' ? 'Public' : tab);
       addTabMsg(tab, '', d.text, 'system', d.time);
-    }
-    else if(d.type === 'dm'){
+    } else if(d.type === 'dm'){
       const tab = d.room;
       const other = d.sender === myName ? d.target : d.sender;
       ensureTab(tab, `DM: ${other}`, true, other);
       addTabMsg(tab, d.sender, d.text, d.sender === myName ? 'me' : 'other', d.time, true);
       if(activeTab !== tab) renderTabs();
-    }
-    else if(d.type === 'users'){
+    } else if(d.type === 'users'){
       updateRoomUsers(d.users);
-    }
-    else if(d.type === 'online_users'){
+    } else if(d.type === 'online_users'){
       updateOnlineUsers(d.users);
-    }
-    else if(d.type === 'invite_created'){
+    } else if(d.type === 'invite_created'){
       document.getElementById('inviteCode').textContent = d.code;
       document.getElementById('inviteResult').style.display = 'flex';
     }
   };
-  
-  ws.onclose = () => {
-    document.getElementById('headerSub').textContent = '🔴 Disconnected';
-  };
-  
-  ws.onerror = () => {
+
+  ws.onerror = (err) => {
+    console.error('WebSocket error:', err);
     let errDiv;
     if(roomType === 'owner') errDiv = document.getElementById('ownerErr');
     else if(roomType === 'secret') errDiv = document.getElementById('secretErr');
     else errDiv = document.getElementById('guestErr');
     errDiv.textContent = 'Connection failed. Is the server running?';
+  };
+
+  ws.onclose = () => {
+    document.getElementById('headerSub').textContent = '🔴 Disconnected';
   };
 }
 
