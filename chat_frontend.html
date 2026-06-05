@@ -13,7 +13,6 @@
 }
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;align-items:center;justify-content:center}
 
-/* SHARED */
 input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;color:var(--text);font-size:.95rem;outline:none;transition:border .2s}
 input:focus{border-color:var(--accent)}
 input::placeholder{color:var(--muted)}
@@ -22,11 +21,9 @@ input::placeholder{color:var(--muted)}
 .btn-primary:hover{opacity:.85;transform:translateY(-1px)}
 .btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent2)}
-.btn-danger{background:#f871711a;border:1px solid var(--red);color:var(--red)}
 .err{color:var(--red);font-size:.82rem;margin-top:.4rem;min-height:1.1em}
 label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
 
-/* LANDING */
 #landing{width:100%;max-width:440px;padding:2rem}
 .logo{text-align:center;margin-bottom:2rem}
 .logo h1{font-size:2rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -37,21 +34,11 @@ label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
 .badge.pub{background:#4ade8022;color:var(--green)}
 .badge.sec{background:#6c63ff22;color:var(--accent2)}
 .badge.own{background:#fbbf2422;color:var(--yellow)}
-.field{margin-bottom:.75rem}
-.divider{display:flex;align-items:center;gap:.75rem;margin:.75rem 0;color:var(--muted);font-size:.8rem}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
-.code-row{display:flex;gap:.5rem}
-.code-row input{flex:1}
-.code-row .btn{width:auto;margin-top:0;padding:.7rem 1rem}
-.gen-code{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;font-family:monospace;font-size:1rem;letter-spacing:.15em;color:var(--accent2);display:flex;align-items:center;justify-content:space-between;margin:.75rem 0}
-.copy-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.8rem;padding:.2rem .5rem;border-radius:6px;transition:color .2s}
-.copy-btn:hover{color:var(--accent2)}
+.badge.guest{background:#a78bfa22;color:var(--accent2)}
 
-/* CHAT */
 #chat{display:none;width:100%;height:100vh;flex-direction:row}
-.sidebar{width:230px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1rem;gap:.6rem;flex-shrink:0;overflow-y:auto}
+.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1rem;gap:.8rem;flex-shrink:0;overflow-y:auto}
 .sidebar .room-name{font-weight:700;font-size:1rem;display:flex;align-items:center;gap:.5rem;word-break:break-all}
-.sidebar .room-code{font-size:.75rem;color:var(--muted);font-family:monospace;background:var(--surface2);padding:.3rem .6rem;border-radius:6px;display:flex;align-items:center;justify-content:space-between}
 .sidebar h3{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-top:.4rem}
 #userList,#onlineList{list-style:none;display:flex;flex-direction:column;gap:.35rem}
 #userList li,#onlineList li{font-size:.85rem;display:flex;align-items:center;gap:.5rem;cursor:pointer;padding:.2rem .3rem;border-radius:6px;transition:background .15s}
@@ -61,12 +48,13 @@ label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
 .leave-btn{margin-top:auto;background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:.5rem;cursor:pointer;font-size:.82rem;transition:all .2s}
 .leave-btn:hover{border-color:var(--red);color:var(--red)}
 
-/* owner panel */
 #ownerPanel{background:var(--surface2);border:1px solid #fbbf2433;border-radius:10px;padding:.75rem;display:none}
 #ownerPanel h3{color:var(--yellow);font-size:.78rem;margin-bottom:.5rem}
 #ownerPanel input{font-size:.82rem;padding:.5rem .7rem;margin-bottom:.4rem}
 #ownerPanel .btn{padding:.5rem;font-size:.82rem;margin-top:.3rem}
 .invite-result{font-family:monospace;font-size:.85rem;color:var(--accent2);background:var(--bg);border-radius:6px;padding:.4rem .6rem;display:flex;align-items:center;justify-content:space-between;margin-top:.4rem;display:none}
+.copy-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:.8rem;padding:.2rem .5rem;border-radius:6px;transition:color .2s}
+.copy-btn:hover{color:var(--accent2)}
 
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .chat-header{padding:.9rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.75rem;background:var(--surface)}
@@ -77,7 +65,7 @@ label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
 .tab{padding:.35rem .8rem;border-radius:20px;font-size:.8rem;cursor:pointer;border:1px solid var(--border);color:var(--muted);white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:.3rem}
 .tab:hover{border-color:var(--accent);color:var(--accent2)}
 .tab.active{background:var(--accent);border-color:var(--accent);color:#fff}
-.tab .close{margin-left:.3rem;opacity:.6;font-size:.75rem}
+.tab .close{margin-left:.3rem;opacity:.6;font-size:.75rem;cursor:pointer}
 .tab .close:hover{opacity:1}
 
 #messages{flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:.6rem;scroll-behavior:smooth}
@@ -96,7 +84,7 @@ label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
 .dm-badge{font-size:.65rem;background:#fbbf2422;color:var(--yellow);padding:.1rem .4rem;border-radius:10px;margin-left:.3rem}
 
 .input-area{padding:.9rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.75rem;background:var(--surface)}
-.input-area input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.7rem 1rem;color:var(--text);font-size:.95rem;outline:none;transition:border .2s}
+.input-area input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:.7rem 1rem;color:var(--text);font-size:.95rem;outline:none}
 .input-area input:focus{border-color:var(--accent)}
 .send-btn{background:linear-gradient(135deg,var(--accent),var(--accent2));border:none;border-radius:12px;width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .send-btn svg{width:18px;height:18px;fill:#fff}
@@ -106,40 +94,43 @@ label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
 </head>
 <body>
 
-<!-- LANDING -->
+<!-- LANDING PAGE -->
 <div id="landing">
   <div class="logo">
     <h1>⚡ Chatplates</h1>
     <p>Real-time chat with rooms & DMs</p>
   </div>
 
-  <!-- User login -->
-  <div class="card">
-    <h2>👤 Join with Invite Code <span class="badge pub">User</span></h2>
-    <div class="field"><label>Your name</label><input id="userName" placeholder="Enter your name..." maxlength="20"/></div>
-    <div class="field"><label>Invite code</label><input id="userCode" placeholder="Enter invite code..." maxlength="12" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"/></div>
-    <div class="err" id="userErr"></div>
-    <button class="btn btn-primary" onclick="loginUser()">Join Chatplates</button>
-  </div>
-
-  <!-- Owner login -->
+  <!-- Owner Login -->
   <div class="card">
     <h2>👑 Owner Login <span class="badge own">Owner</span></h2>
     <div class="field"><label>Owner PIN</label><input id="ownerPin" type="password" placeholder="Enter owner PIN..."/></div>
-    <div class="field"><label>Your name</label><input id="ownerName" placeholder="Display name..." maxlength="20"/></div>
+    <div class="field"><label>Your display name</label><input id="ownerName" placeholder="Display name..." maxlength="20"/></div>
     <div class="err" id="ownerErr"></div>
     <button class="btn btn-primary" onclick="loginOwner()">Login as Owner</button>
   </div>
+
+  <!-- Secret Room (Invite Code Only - name forced by owner) -->
+  <div class="card">
+    <h2>🔐 Secret Room <span class="badge sec">Invite only</span></h2>
+    <div class="field"><label>Invite code</label><input id="secretCode" placeholder="Enter invite code..." maxlength="12" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"/></div>
+    <div class="err" id="secretErr"></div>
+    <button class="btn btn-primary" onclick="joinSecretRoom()">Join Secret Room</button>
+  </div>
+
+  <!-- Guest Lounge (No code, pick any name) -->
+  <div class="card">
+    <h2>🆓 Guest Lounge <span class="badge guest">Free</span></h2>
+    <div class="field"><label>Your guest name</label><input id="guestName" placeholder="Choose a name..." maxlength="20"/></div>
+    <div class="err" id="guestErr"></div>
+    <button class="btn btn-primary" onclick="joinGuest()">Enter Guest Lounge</button>
+  </div>
 </div>
 
-<!-- CHAT -->
+<!-- CHAT INTERFACE -->
 <div id="chat">
   <div class="sidebar">
     <div class="room-name" id="sideRoomName">Chatplates</div>
-    <div id="sideRoomCode" style="display:none">
-      <div style="font-size:.72rem;color:var(--muted);margin-bottom:.3rem">Room Code</div>
-      <div class="room-code"><span id="sideCode"></span><button class="copy-btn" onclick="copySideCode()">📋</button></div>
-    </div>
 
     <h3>In Room — <span id="onlineCount">0</span></h3>
     <ul id="userList"></ul>
@@ -147,18 +138,18 @@ label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
     <h3>All Online</h3>
     <ul id="onlineList"></ul>
 
-    <!-- Owner panel -->
+    <!-- Owner Panel (only visible to owner) -->
     <div id="ownerPanel">
-      <h3>👑 Create Account</h3>
-      <input id="inviteName" placeholder="Account name..."/>
-      <button class="btn btn-primary" onclick="createInvite()" style="margin-top:.3rem">Generate Invite Code</button>
+      <h3>👑 Create Invite Code</h3>
+      <input id="inviteName" placeholder="User's name (fixed)"/>
+      <button class="btn btn-primary" onclick="createInvite()">Generate Invite Code</button>
       <div class="invite-result" id="inviteResult">
         <span id="inviteCode"></span>
-        <button class="copy-btn" onclick="copyInvite()">📋</button>
+        <button class="copy-btn" onclick="copyInvite()">📋 Copy</button>
       </div>
     </div>
 
-    <button class="leave-btn" onclick="leaveRoom()">← Leave</button>
+    <button class="leave-btn" onclick="leaveRoom()">← Leave Room</button>
   </div>
 
   <div class="main">
@@ -179,14 +170,14 @@ label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
 const WS_URL = 'wss://chatplates.onrender.com/ws';
 let ws = null, myName = '', isOwner = false;
 let activeTab = 'public';
-// tabs: {id, label, messages[], isDM, target?}
 let tabsData = {};
 
 function openTab(id){
   activeTab = id;
   renderTabs();
   renderMessages();
-  document.getElementById('msgInput').placeholder = tabsData[id]?.isDM ? `DM ${tabsData[id].target}...` : 'Type a message...';
+  const placeholder = tabsData[id]?.isDM ? `DM to ${tabsData[id].target}...` : 'Type a message...';
+  document.getElementById('msgInput').placeholder = placeholder;
 }
 
 function renderTabs(){
@@ -194,9 +185,9 @@ function renderTabs(){
   el.innerHTML = '';
   Object.values(tabsData).forEach(t=>{
     const div = document.createElement('div');
-    div.className = 'tab' + (t.id===activeTab?' active':'');
-    div.innerHTML = (t.isDM?'💬 ':'🏠 ') + t.label + (t.id!=='public'?` <span class="close" onclick="closeTab(event,'${t.id}')">✕</span>`:'');
-    div.onclick = ()=>openTab(t.id);
+    div.className = 'tab' + (t.id === activeTab ? ' active' : '');
+    div.innerHTML = (t.isDM ? '💬 ' : '🏠 ') + t.label + (t.id !== 'public' ? ` <span class="close" onclick="closeTab(event,'${t.id}')">✕</span>` : '');
+    div.onclick = () => openTab(t.id);
     el.appendChild(div);
   });
 }
@@ -204,188 +195,229 @@ function renderTabs(){
 function closeTab(e, id){
   e.stopPropagation();
   delete tabsData[id];
-  if(activeTab===id) activeTab = 'public';
-  renderTabs(); renderMessages();
+  if(activeTab === id) activeTab = 'public';
+  renderTabs();
+  renderMessages();
 }
 
-function addTabMsg(tabId, sender, text, type, time, isDM=false){
+function ensureTab(id, label, isDM = false, target = ''){
+  if(!tabsData[id]) tabsData[id] = {id, label, messages: [], isDM, target};
+}
+
+function addTabMsg(tabId, sender, text, type, time, isDM = false){
   if(!tabsData[tabId]) return;
-  tabsData[tabId].messages.push({sender,text,type,time,isDM});
-  if(activeTab===tabId) renderMessages();
+  tabsData[tabId].messages.push({sender, text, type, time, isDM});
+  if(activeTab === tabId) renderMessages();
 }
 
 function renderMessages(){
   const wrap = document.getElementById('messages');
-  wrap.innerHTML='';
+  wrap.innerHTML = '';
   const msgs = tabsData[activeTab]?.messages || [];
-  msgs.forEach(m=>{
-    const div=document.createElement('div');
-    div.className=`msg ${m.type}`;
-    if(m.type!=='system'){
-      const meta=document.createElement('div');
-      meta.className='meta';
-      meta.innerHTML=(m.type==='me'?'You':m.sender)+(m.isDM?'<span class="dm-badge">DM</span>':'')+' · '+m.time;
+  msgs.forEach(m => {
+    const div = document.createElement('div');
+    div.className = `msg ${m.type}`;
+    if(m.type !== 'system'){
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.innerHTML = (m.type === 'me' ? 'You' : m.sender) + (m.isDM ? '<span class="dm-badge">DM</span>' : '') + ' · ' + m.time;
       div.appendChild(meta);
     }
-    const bubble=document.createElement('div');
-    bubble.className='bubble';
-    bubble.textContent=m.text;
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = m.text;
     div.appendChild(bubble);
     wrap.appendChild(div);
   });
-  wrap.scrollTop=wrap.scrollHeight;
+  wrap.scrollTop = wrap.scrollHeight;
 }
 
-function ensureTab(id, label, isDM=false, target=''){
-  if(!tabsData[id]) tabsData[id]={id,label,messages:[],isDM,target};
-}
-
-function loginUser(){
-  const name=document.getElementById('userName').value.trim();
-  const code=document.getElementById('userCode').value.trim().toUpperCase();
-  const err=document.getElementById('userErr');
-  if(!name){err.textContent='Enter your name.';return;}
-  if(!code){err.textContent='Enter invite code.';return;}
-  err.textContent='';
-  connectWS(name, false, null, code);
-}
-
+// ========== LOGIN FUNCTIONS ==========
 function loginOwner(){
-  const pin=document.getElementById('ownerPin').value.trim();
-  const name=document.getElementById('ownerName').value.trim()||'Owner';
-  const err=document.getElementById('ownerErr');
-  if(!pin){err.textContent='Enter your PIN.';return;}
-  err.textContent='';
-  connectWS(name, true, pin, null);
+  const pin = document.getElementById('ownerPin').value.trim();
+  const name = document.getElementById('ownerName').value.trim() || 'Owner';
+  const err = document.getElementById('ownerErr');
+  if(!pin){ err.textContent = 'Enter owner PIN.'; return; }
+  err.textContent = '';
+  connectWebSocket('owner', {type: 'auth', pin, name});
 }
 
-function connectWS(name, owner, pin, code){
-  ws = new WebSocket(`${WS_URL}/public?name=${encodeURIComponent(name)}`);
-  ws.onopen = ()=>{
-    const auth = owner ? {type:'auth',pin,name} : {type:'auth',code,name};
-    ws.send(JSON.stringify(auth));
+function joinSecretRoom(){
+  const code = document.getElementById('secretCode').value.trim().toUpperCase();
+  const err = document.getElementById('secretErr');
+  if(!code){ err.textContent = 'Enter invite code.'; return; }
+  err.textContent = '';
+  connectWebSocket('secret', {type: 'auth', code});
+}
+
+function joinGuest(){
+  const name = document.getElementById('guestName').value.trim();
+  const err = document.getElementById('guestErr');
+  if(!name){ err.textContent = 'Enter a guest name.'; return; }
+  err.textContent = '';
+  connectWebSocket('guest', {type: 'auth', name});
+}
+
+function connectWebSocket(roomType, authMsg){
+  let wsUrl;
+  if(roomType === 'guest'){
+    wsUrl = `${WS_URL}/guest`;
+  } else {
+    wsUrl = `${WS_URL}/public`;
+  }
+  
+  ws = new WebSocket(wsUrl);
+  
+  ws.onopen = () => {
+    ws.send(JSON.stringify(authMsg));
   };
-  ws.onmessage = e=>{
+  
+  ws.onmessage = (e) => {
     const d = JSON.parse(e.data);
-    if(d.type==='auth_ok'){
-      myName=d.name; isOwner=d.is_owner;
+    
+    if(d.type === 'auth_ok'){
+      myName = d.name;
+      isOwner = d.is_owner;
       showChat();
-    } else if(d.type==='auth_fail'){
-      if(owner) document.getElementById('ownerErr').textContent=d.reason;
-      else document.getElementById('userErr').textContent=d.reason;
-      ws.close(); ws=null;
-    } else if(d.type==='message'){
-      const tab=d.room||'public';
-      ensureTab(tab, tab==='public'?'Public':tab);
-      addTabMsg(tab, d.sender, d.text, d.sender===myName?'me':'other', d.time);
-    } else if(d.type==='system'){
-      const tab=d.room||activeTab;
-      ensureTab(tab, tab==='public'?'Public':tab);
-      addTabMsg(tab,'','','system',d.time); // reuse below
-      tabsData[tab].messages[tabsData[tab].messages.length-1]={sender:'',text:d.text,type:'system',time:d.time};
-      if(activeTab===tab) renderMessages();
-    } else if(d.type==='dm'){
-      const tab=d.room;
-      const other=d.sender===myName?d.target:d.sender;
-      ensureTab(tab,`DM: ${other}`,true,other);
-      addTabMsg(tab,d.sender,d.text,d.sender===myName?'me':'other',d.time,true);
-      if(activeTab!==tab){ renderTabs(); }
-    } else if(d.type==='users'){
+    } 
+    else if(d.type === 'auth_fail'){
+      let errDiv;
+      if(roomType === 'owner') errDiv = document.getElementById('ownerErr');
+      else if(roomType === 'secret') errDiv = document.getElementById('secretErr');
+      else errDiv = document.getElementById('guestErr');
+      errDiv.textContent = d.reason;
+      ws.close();
+      ws = null;
+    }
+    else if(d.type === 'message'){
+      const tab = d.room || 'public';
+      ensureTab(tab, tab === 'public' ? 'Public' : tab);
+      addTabMsg(tab, d.sender, d.text, d.sender === myName ? 'me' : 'other', d.time);
+    }
+    else if(d.type === 'system'){
+      const tab = d.room || activeTab;
+      ensureTab(tab, tab === 'public' ? 'Public' : tab);
+      addTabMsg(tab, '', d.text, 'system', d.time);
+    }
+    else if(d.type === 'dm'){
+      const tab = d.room;
+      const other = d.sender === myName ? d.target : d.sender;
+      ensureTab(tab, `DM: ${other}`, true, other);
+      addTabMsg(tab, d.sender, d.text, d.sender === myName ? 'me' : 'other', d.time, true);
+      if(activeTab !== tab) renderTabs();
+    }
+    else if(d.type === 'users'){
       updateRoomUsers(d.users);
-    } else if(d.type==='online_users'){
+    }
+    else if(d.type === 'online_users'){
       updateOnlineUsers(d.users);
-    } else if(d.type==='invite_created'){
-      document.getElementById('inviteCode').textContent=d.code;
-      document.getElementById('inviteResult').style.display='flex';
+    }
+    else if(d.type === 'invite_created'){
+      document.getElementById('inviteCode').textContent = d.code;
+      document.getElementById('inviteResult').style.display = 'flex';
     }
   };
-  ws.onclose=()=>{ document.getElementById('headerSub').textContent='🔴 Disconnected'; };
-  ws.onerror=()=>{ document.getElementById('userErr').textContent='Connection failed. Is server running?'; };
+  
+  ws.onclose = () => {
+    document.getElementById('headerSub').textContent = '🔴 Disconnected';
+  };
+  
+  ws.onerror = () => {
+    let errDiv;
+    if(roomType === 'owner') errDiv = document.getElementById('ownerErr');
+    else if(roomType === 'secret') errDiv = document.getElementById('secretErr');
+    else errDiv = document.getElementById('guestErr');
+    errDiv.textContent = 'Connection failed. Is the server running?';
+  };
 }
 
 function showChat(){
-  document.getElementById('landing').style.display='none';
-  const chat=document.getElementById('chat');
-  chat.style.display='flex';
-  document.getElementById('headerAvatar').textContent=myName[0].toUpperCase();
-  document.getElementById('headerRoom').textContent=isOwner?'👑 '+myName:myName;
-  document.getElementById('headerSub').textContent='🟢 Connected';
-  if(isOwner) document.getElementById('ownerPanel').style.display='block';
-  ensureTab('public','Public');
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('chat').style.display = 'flex';
+  document.getElementById('headerAvatar').textContent = myName[0].toUpperCase();
+  document.getElementById('headerRoom').textContent = isOwner ? '👑 ' + myName : myName;
+  document.getElementById('headerSub').textContent = '🟢 Connected';
+  if(isOwner) document.getElementById('ownerPanel').style.display = 'block';
+  ensureTab('public', 'Public');
   openTab('public');
 }
 
 function updateRoomUsers(users){
-  const list=document.getElementById('userList');
-  list.innerHTML='';
-  users.forEach(u=>{
-    const li=document.createElement('li');
-    li.textContent=u;
-    if(u===myName) li.style.color='var(--accent2)';
+  const list = document.getElementById('userList');
+  list.innerHTML = '';
+  users.forEach(u => {
+    const li = document.createElement('li');
+    li.textContent = u;
+    if(u === myName) li.style.color = 'var(--accent2)';
     list.appendChild(li);
   });
-  document.getElementById('onlineCount').textContent=users.length;
+  document.getElementById('onlineCount').textContent = users.length;
 }
 
 function updateOnlineUsers(users){
-  const list=document.getElementById('onlineList');
-  list.innerHTML='';
-  users.filter(u=>u!==myName).forEach(u=>{
-    const li=document.createElement('li');
-    li.textContent=u;
-    li.title=`DM ${u}`;
-    li.onclick=()=>startDM(u);
+  const list = document.getElementById('onlineList');
+  list.innerHTML = '';
+  users.filter(u => u !== myName).forEach(u => {
+    const li = document.createElement('li');
+    li.textContent = u;
+    li.title = `Send DM to ${u}`;
+    li.onclick = () => startDM(u);
     list.appendChild(li);
   });
 }
 
 function startDM(target){
-  const dmRoom='dm_'+[myName,target].sort().join('_');
-  ensureTab(dmRoom,`DM: ${target}`,true,target);
+  const dmRoom = 'dm_' + [myName, target].sort().join('_');
+  ensureTab(dmRoom, `DM: ${target}`, true, target);
   openTab(dmRoom);
   document.getElementById('msgInput').focus();
 }
 
 function sendMsg(){
-  const inp=document.getElementById('msgInput');
-  const text=inp.value.trim();
-  if(!text||!ws||ws.readyState!==1) return;
-  const tab=tabsData[activeTab];
+  const inp = document.getElementById('msgInput');
+  const text = inp.value.trim();
+  if(!text || !ws || ws.readyState !== 1) return;
+  const tab = tabsData[activeTab];
   if(tab?.isDM){
-    ws.send(JSON.stringify({type:'dm',target:tab.target,text}));
+    ws.send(JSON.stringify({type: 'dm', target: tab.target, text}));
   } else {
-    ws.send(JSON.stringify({type:'message',text,room:activeTab}));
+    ws.send(JSON.stringify({type: 'message', text, room: activeTab}));
   }
-  inp.value='';
+  inp.value = '';
 }
 
 function createInvite(){
-  const name=document.getElementById('inviteName').value.trim()||'User';
-  if(!ws||ws.readyState!==1) return;
-  ws.send(JSON.stringify({type:'create_invite',invited_name:name}));
+  const name = document.getElementById('inviteName').value.trim();
+  if(!name){
+    alert('Please enter a name for the invited user');
+    return;
+  }
+  if(!ws || ws.readyState !== 1) return;
+  ws.send(JSON.stringify({type: 'create_invite', invited_name: name}));
 }
 
 function copyInvite(){
-  const code=document.getElementById('inviteCode').textContent;
-  navigator.clipboard.writeText(code).then(()=>{
-    const btn=document.querySelector('#inviteResult .copy-btn');
-    btn.textContent='✅'; setTimeout(()=>btn.textContent='📋',1500);
+  const code = document.getElementById('inviteCode').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const btn = document.querySelector('#inviteResult .copy-btn');
+    const originalText = btn.textContent;
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = originalText, 1500);
   });
-}
-
-function copySideCode(){
-  navigator.clipboard.writeText(document.getElementById('sideCode').textContent);
 }
 
 function leaveRoom(){
   if(ws) ws.close();
-  document.getElementById('chat').style.display='none';
-  document.getElementById('landing').style.display='block';
-  tabsData={}; activeTab='public';
-  document.getElementById('messages').innerHTML='';
-  document.getElementById('tabs').innerHTML='';
-  document.getElementById('ownerPanel').style.display='none';
-  document.getElementById('inviteResult').style.display='none';
+  document.getElementById('chat').style.display = 'none';
+  document.getElementById('landing').style.display = 'block';
+  tabsData = {};
+  activeTab = 'public';
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('tabs').innerHTML = '';
+  document.getElementById('ownerPanel').style.display = 'none';
+  document.getElementById('inviteResult').style.display = 'none';
+  document.getElementById('userList').innerHTML = '';
+  document.getElementById('onlineList').innerHTML = '';
 }
 </script>
 </body>
