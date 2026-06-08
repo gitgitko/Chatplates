@@ -1,283 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Chatplates</title>
-<style>
-/* (same CSS as before - keep unchanged) */
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#22263a;--border:#2e3250;--accent:#6c63ff;--accent2:#a78bfa;--text:#e2e8f0;--muted:#8892b0;--green:#4ade80;--red:#f87171;--yellow:#fbbf24}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;align-items:center;justify-content:center}
-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.7rem 1rem;color:var(--text);font-size:.95rem;outline:none}
-input:focus{border-color:var(--accent)}
-.btn{width:100%;padding:.75rem;border-radius:10px;border:none;font-size:.95rem;font-weight:600;cursor:pointer;margin-top:.75rem}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
-.err{color:var(--red);font-size:.82rem;margin-top:.4rem}
-label{display:block;font-size:.85rem;color:var(--muted);margin-bottom:.4rem}
-#landing{width:100%;max-width:440px;padding:2rem}
-.logo{text-align:center;margin-bottom:2rem}
-.logo h1{font-size:2rem;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1rem}
-.card h2{font-size:1rem;margin-bottom:1rem}
-.badge{font-size:.7rem;padding:.2rem .5rem;border-radius:20px}
-.badge.pub{background:#4ade8022;color:var(--green)}
-.badge.sec{background:#6c63ff22;color:var(--accent2)}
-.badge.own{background:#fbbf2422;color:var(--yellow)}
-.badge.guest{background:#a78bfa22;color:var(--accent2)}
-#chat{display:none;width:100%;height:100vh;flex-direction:row}
-.sidebar{width:260px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1rem;gap:.8rem}
-.sidebar h3{font-size:.72rem;color:var(--muted)}
-#userList,#onlineList{list-style:none}
-#userList li,#onlineList li{font-size:.85rem;cursor:pointer;padding:.2rem .3rem}
-#userList li::before{content:'●';color:var(--green);margin-right:.5rem}
-#onlineList li::before{content:'💬';margin-right:.5rem}
-.leave-btn{margin-top:auto;background:transparent;border:1px solid var(--border);border-radius:8px;padding:.5rem;cursor:pointer}
-#ownerPanel{background:var(--surface2);border:1px solid #fbbf2433;border-radius:10px;padding:.75rem;display:none}
-#ownerPanel h3{color:var(--yellow);font-size:.78rem}
-.invite-result{display:none;margin-top:.4rem}
-.main{flex:1;display:flex;flex-direction:column}
-.chat-header{padding:.9rem 1.25rem;border-bottom:1px solid var(--border);display:flex;gap:.75rem}
-.tabs{display:flex;gap:.5rem;padding:.6rem 1.25rem;border-bottom:1px solid var(--border);overflow-x:auto}
-.tab{padding:.35rem .8rem;border-radius:20px;font-size:.8rem;cursor:pointer;border:1px solid var(--border);color:var(--muted)}
-.tab.active{background:var(--accent);color:#fff}
-#messages{flex:1;overflow-y:auto;padding:1.25rem}
-.msg{margin-bottom:.5rem}
-.msg.me{text-align:right}
-.bubble{display:inline-block;padding:.4rem .8rem;border-radius:12px;background:var(--surface2)}
-.msg.me .bubble{background:var(--accent);color:#fff}
-.input-area{padding:.9rem 1.25rem;border-top:1px solid var(--border);display:flex;gap:.75rem}
-.input-area input{flex:1}
-.send-btn{background:var(--accent);border:none;border-radius:12px;width:44px;cursor:pointer}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatplates – Rooms</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, 'Segoe UI', sans-serif;
+            background: #0f1117;
+            color: #e2e8f0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .card {
+            background: #1a1d27;
+            border: 1px solid #2e3250;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            width: 100%;
+            max-width: 400px;
+        }
+        input, button {
+            width: 100%;
+            padding: 0.7rem;
+            margin-top: 0.5rem;
+            border-radius: 12px;
+            border: none;
+            font-size: 1rem;
+        }
+        input {
+            background: #22263a;
+            color: white;
+            border: 1px solid #2e3250;
+        }
+        button {
+            background: linear-gradient(135deg, #6c63ff, #a78bfa);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .err { color: #f87171; font-size: 0.8rem; margin-top: 0.3rem; }
+        .badge {
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            margin-left: 0.5rem;
+        }
+        .badge.public { background: #4ade8022; color: #4ade80; }
+        .badge.secret { background: #a78bfa22; color: #a78bfa; }
+        #landing { width: 100%; max-width: 440px; padding: 2rem; }
+        .logo { text-align: center; margin-bottom: 2rem; }
+        .logo h1 { font-size: 2rem; background: linear-gradient(135deg, #6c63ff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        #chat {
+            display: none;
+            width: 100%;
+            height: 100vh;
+            flex-direction: row;
+        }
+        .sidebar {
+            width: 240px;
+            background: #1a1d27;
+            border-right: 1px solid #2e3250;
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            gap: 1rem;
+        }
+        .sidebar h3 { font-size: 0.75rem; color: #8892b0; margin-top: 0.5rem; }
+        #userList, #onlineList {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        #userList li, #onlineList li {
+            font-size: 0.85rem;
+            padding: 0.2rem 0.3rem;
+            border-radius: 6px;
+        }
+        #userList li::before { content: "●"; color: #4ade80; margin-right: 0.5rem; }
+        #onlineList li::before { content: "👤"; margin-right: 0.5rem; }
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-header {
+            padding: 0.8rem 1.2rem;
+            border-bottom: 1px solid #2e3250;
+            background: #1a1d27;
+        }
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .msg { display: flex; flex-direction: column; max-width: 70%; }
+        .msg.me { align-self: flex-end; align-items: flex-end; }
+        .msg.other { align-self: flex-start; }
+        .msg.system { align-self: center; max-width: 90%; }
+        .bubble {
+            padding: 0.5rem 0.8rem;
+            border-radius: 16px;
+            background: #22263a;
+        }
+        .msg.me .bubble { background: #6c63ff; }
+        .msg.system .bubble { background: #2e3250; color: #8892b0; font-size: 0.8rem; }
+        .meta { font-size: 0.7rem; color: #8892b0; margin-bottom: 0.2rem; }
+        .input-area {
+            padding: 0.8rem;
+            border-top: 1px solid #2e3250;
+            display: flex;
+            gap: 0.5rem;
+            background: #1a1d27;
+        }
+        .input-area input {
+            flex: 1;
+            margin: 0;
+        }
+        .input-area button {
+            width: auto;
+            padding: 0.7rem 1.2rem;
+            margin: 0;
+        }
+        .room-switch {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding: 0 0.8rem 0.8rem;
+        }
+        .room-switch input { flex: 1; margin: 0; }
+        .room-switch button { width: auto; margin: 0; }
+    </style>
 </head>
 <body>
 
 <div id="landing">
-  <div class="logo"><h1>⚡ Chatplates</h1><p>Real-time chat with rooms & DMs</p></div>
+    <div class="logo"><h1>⚡ Chatplates</h1><p>Public room + secret rooms</p></div>
 
-  <div class="card">
-    <h2>👑 Owner Login <span class="badge own">Owner</span></h2>
-    <input id="ownerPin" type="password" placeholder="PIN">
-    <input id="ownerName" placeholder="Your name">
-    <div class="err" id="ownerErr"></div>
-    <button class="btn btn-primary" onclick="loginOwner()">Login</button>
-  </div>
+    <!-- Public Room -->
+    <div class="card">
+        <h2>🌐 Public Room <span class="badge public">Free</span></h2>
+        <input type="text" id="publicName" placeholder="Your name">
+        <div class="err" id="publicErr"></div>
+        <button onclick="joinPublic()">Enter Public Room</button>
+    </div>
 
-  <div class="card">
-    <h2>🔐 Secret Room <span class="badge sec">Invite only</span></h2>
-    <input id="secretCode" placeholder="Invite code" style="text-transform:uppercase">
-    <div class="err" id="secretErr"></div>
-    <button class="btn btn-primary" onclick="joinSecretRoom()">Join</button>
-  </div>
-
-  <div class="card">
-    <h2>🆓 Guest Lounge <span class="badge guest">Free</span></h2>
-    <input id="guestName" placeholder="Your guest name">
-    <div class="err" id="guestErr"></div>
-    <button class="btn btn-primary" onclick="joinGuest()">Enter Guest Lounge</button>
-  </div>
+    <!-- Create / Join Secret Room -->
+    <div class="card">
+        <h2>🔒 Secret Room <span class="badge secret">Create or join</span></h2>
+        <input type="text" id="secretName" placeholder="Your name">
+        <div class="err" id="secretErr"></div>
+        <div class="room-switch" style="margin:0.5rem 0 0 0; padding:0;">
+            <input type="text" id="roomName" placeholder="Room name (e.g., gamers)">
+            <button onclick="joinSecretRoom()">Join</button>
+        </div>
+        <small style="color:#8892b0;">If room doesn't exist, it will be created.</small>
+    </div>
 </div>
 
 <div id="chat">
-  <div class="sidebar">
-    <h3>In Room — <span id="onlineCount">0</span></h3>
-    <ul id="userList"></ul>
-    <h3>All Online</h3>
-    <ul id="onlineList"></ul>
-    <div id="ownerPanel">
-      <h3>👑 Create Invite</h3>
-      <input id="inviteName" placeholder="User's name">
-      <button class="btn btn-primary" onclick="createInvite()">Generate Code</button>
-      <div class="invite-result" id="inviteResult"><span id="inviteCode"></span><button class="copy-btn" onclick="copyInvite()">📋</button></div>
+    <div class="sidebar">
+        <h3>In this room — <span id="onlineCount">0</span></h3>
+        <ul id="userList"></ul>
+        <h3>All online</h3>
+        <ul id="onlineList"></ul>
+        <button class="leave-btn" onclick="leaveRoom()" style="margin-top: auto;">← Leave room</button>
     </div>
-    <button class="leave-btn" onclick="leaveRoom()">Leave</button>
-  </div>
-  <div class="main">
-    <div class="chat-header"><strong id="headerRoom">Room</strong> <span id="headerSub">Connecting...</span></div>
-    <div class="tabs" id="tabs"></div>
-    <div id="messages"></div>
-    <div class="input-area"><input id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendMsg()"><button class="send-btn" onclick="sendMsg()">➤</button></div>
-  </div>
+    <div class="main">
+        <div class="chat-header">
+            <strong id="roomTitle">Room</strong> · <span id="headerSub">Connected</span>
+        </div>
+        <div id="messages"></div>
+        <div class="input-area">
+            <input type="text" id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMsg()">
+            <button onclick="sendMsg()">Send</button>
+        </div>
+        <div class="room-switch">
+            <input type="text" id="switchRoomName" placeholder="Switch to another room">
+            <button onclick="switchRoom()">Switch</button>
+        </div>
+    </div>
 </div>
 
 <script>
-const WS_URL = 'wss://chatplates.onrender.com/ws'; // CHANGE THIS TO YOUR RENDER URL
-let ws = null, myName = '', isOwner = false;
-let activeTab = 'public';
-let tabsData = {};
+    const WS_URL = 'wss://chatplates.onrender.com';  // CHANGE THIS to your Render URL (no trailing slash)
+    let ws = null, myName = '', currentRoom = '';
+    let tabsData = { public: { id: 'public', label: 'Public', messages: [] } };
+    let activeTab = 'public';
 
-function openTab(id) { activeTab = id; renderTabs(); renderMessages(); }
-function renderTabs() { /* simplified for brevity, but functional */ 
-  const el = document.getElementById('tabs');
-  el.innerHTML = '';
-  for (let id in tabsData) {
-    let t = tabsData[id];
-    let div = document.createElement('div');
-    div.className = 'tab' + (id === activeTab ? ' active' : '');
-    div.textContent = t.label;
-    div.onclick = () => openTab(id);
-    el.appendChild(div);
-  }
-}
-function ensureTab(id, label) { if (!tabsData[id]) tabsData[id] = { id, label, messages: [] }; }
-function addTabMsg(tabId, sender, text, type, time) {
-  if (!tabsData[tabId]) return;
-  tabsData[tabId].messages.push({ sender, text, type, time });
-  if (activeTab === tabId) renderMessages();
-}
-function renderMessages() {
-  const wrap = document.getElementById('messages');
-  wrap.innerHTML = '';
-  let msgs = tabsData[activeTab]?.messages || [];
-  msgs.forEach(m => {
-    let div = document.createElement('div');
-    div.className = 'msg' + (m.type === 'me' ? ' me' : '');
-    let bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    bubble.innerHTML = `<strong>${m.sender}</strong> ${m.text}<br><small>${m.time}</small>`;
-    div.appendChild(bubble);
-    wrap.appendChild(div);
-  });
-  wrap.scrollTop = wrap.scrollHeight;
-}
-
-function loginOwner() {
-  let pin = document.getElementById('ownerPin').value.trim();
-  let name = document.getElementById('ownerName').value.trim() || 'Owner';
-  if (!pin) { document.getElementById('ownerErr').textContent = 'PIN required'; return; }
-  connectWebSocket('owner', { type: 'auth', pin, name });
-}
-function joinSecretRoom() {
-  let code = document.getElementById('secretCode').value.trim().toUpperCase();
-  if (!code) { document.getElementById('secretErr').textContent = 'Code required'; return; }
-  connectWebSocket('secret', { type: 'auth', code });
-}
-function joinGuest() {
-  let name = document.getElementById('guestName').value.trim();
-  if (!name) { document.getElementById('guestErr').textContent = 'Name required'; return; }
-  connectWebSocket('guest', { type: 'auth', name });
-}
-
-// ========== FIXED WEBSOCKET CONNECTION ==========
-function connectWebSocket(roomType, authMsg) {
-  if (ws && ws.readyState === WebSocket.OPEN) ws.close();
-
-  let wsUrl = roomType === 'guest' ? `${WS_URL}/guest` : `${WS_URL}/public`;
-  console.log('Connecting to', wsUrl);
-  ws = new WebSocket(wsUrl);
-
-  ws.onopen = () => {
-    console.log('open, sending auth');
-    // Direct send – but ensure state is OPEN (it should be)
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify(authMsg));
-    } else {
-      // fallback polling
-      let attempt = 0;
-      const trySend = () => {
-        if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify(authMsg));
-        } else if (attempt++ < 20) {
-          setTimeout(trySend, 20);
-        } else {
-          console.error('Failed to send auth');
-        }
-      };
-      trySend();
+    function openTab(id) {
+        activeTab = id;
+        renderMessages();
+        document.getElementById('roomTitle').innerText = tabsData[id].label;
+        document.getElementById('msgInput').placeholder = `Message in ${tabsData[id].label}...`;
     }
-  };
 
-  ws.onmessage = (e) => {
-    let d = JSON.parse(e.data);
-    console.log('msg', d);
-    if (d.type === 'auth_ok') {
-      myName = d.name;
-      isOwner = d.is_owner;
-      showChat();
-    } else if (d.type === 'auth_fail') {
-      let errDiv = roomType === 'owner' ? document.getElementById('ownerErr') : (roomType === 'secret' ? document.getElementById('secretErr') : document.getElementById('guestErr'));
-      errDiv.textContent = d.reason;
-      ws.close(); ws = null;
-    } else if (d.type === 'message') {
-      let tab = d.room || 'public';
-      ensureTab(tab, tab === 'public' ? 'Public' : tab);
-      addTabMsg(tab, d.sender, d.text, d.sender === myName ? 'me' : 'other', d.time);
-    } else if (d.type === 'system') {
-      let tab = d.room || activeTab;
-      ensureTab(tab, tab === 'public' ? 'Public' : tab);
-      addTabMsg(tab, 'System', d.text, 'system', d.time);
-    } else if (d.type === 'dm') {
-      let tab = d.room;
-      let other = d.sender === myName ? d.target : d.sender;
-      ensureTab(tab, `DM: ${other}`);
-      addTabMsg(tab, d.sender, d.text, d.sender === myName ? 'me' : 'other', d.time);
-    } else if (d.type === 'users') {
-      let list = document.getElementById('userList');
-      list.innerHTML = '';
-      d.users.forEach(u => { let li = document.createElement('li'); li.textContent = u; list.appendChild(li); });
-      document.getElementById('onlineCount').textContent = d.users.length;
-    } else if (d.type === 'online_users') {
-      let list = document.getElementById('onlineList');
-      list.innerHTML = '';
-      d.users.filter(u => u !== myName).forEach(u => {
-        let li = document.createElement('li'); li.textContent = u; li.onclick = () => startDM(u); list.appendChild(li);
-      });
-    } else if (d.type === 'invite_created') {
-      document.getElementById('inviteCode').textContent = d.code;
-      document.getElementById('inviteResult').style.display = 'flex';
+    function addMessage(tabId, sender, text, type, time) {
+        if (!tabsData[tabId]) return;
+        tabsData[tabId].messages.push({ sender, text, type, time });
+        if (activeTab === tabId) renderMessages();
     }
-  };
 
-  ws.onerror = (err) => {
-    console.error('ws error', err);
-    let errDiv = roomType === 'owner' ? document.getElementById('ownerErr') : (roomType === 'secret' ? document.getElementById('secretErr') : document.getElementById('guestErr'));
-    errDiv.textContent = 'Connection failed. Is server running? Check backend logs.';
-  };
+    function renderMessages() {
+        const container = document.getElementById('messages');
+        container.innerHTML = '';
+        const msgs = tabsData[activeTab]?.messages || [];
+        msgs.forEach(m => {
+            const div = document.createElement('div');
+            div.className = `msg ${m.type}`;
+            if (m.type !== 'system') {
+                const meta = document.createElement('div');
+                meta.className = 'meta';
+                meta.innerHTML = (m.type === 'me' ? 'You' : m.sender) + ' · ' + m.time;
+                div.appendChild(meta);
+            }
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.textContent = m.text;
+            div.appendChild(bubble);
+            container.appendChild(div);
+        });
+        container.scrollTop = container.scrollHeight;
+    }
 
-  ws.onclose = () => {
-    console.log('ws closed');
-    document.getElementById('headerSub').textContent = 'Disconnected';
-  };
-}
+    function updateRoomUsers(users) {
+        const list = document.getElementById('userList');
+        list.innerHTML = '';
+        users.forEach(u => {
+            const li = document.createElement('li');
+            li.textContent = u;
+            if (u === myName) li.style.color = '#a78bfa';
+            list.appendChild(li);
+        });
+        document.getElementById('onlineCount').textContent = users.length;
+    }
 
-function showChat() {
-  document.getElementById('landing').style.display = 'none';
-  document.getElementById('chat').style.display = 'flex';
-  document.getElementById('headerRoom').textContent = myName;
-  document.getElementById('headerSub').textContent = 'Connected';
-  if (isOwner) document.getElementById('ownerPanel').style.display = 'block';
-  ensureTab('public', 'Public');
-  openTab('public');
-}
+    function updateOnlineUsers(users) {
+        const list = document.getElementById('onlineList');
+        list.innerHTML = '';
+        users.filter(u => u !== myName).forEach(u => {
+            const li = document.createElement('li');
+            li.textContent = u;
+            list.appendChild(li);
+        });
+    }
 
-function startDM(target) {
-  let dmRoom = 'dm_' + [myName, target].sort().join('_');
-  ensureTab(dmRoom, `DM: ${target}`);
-  openTab(dmRoom);
-}
-function sendMsg() {
-  let inp = document.getElementById('msgInput');
-  let text = inp.value.trim();
-  if (!text || !ws || ws.readyState !== 1) return;
-  let tab = tabsData[activeTab];
-  if (tab && tab.label.startsWith('DM:')) {
-    let target = tab.label.replace('DM: ', '');
-    ws.send(JSON.stringify({ type: 'dm', target, text }));
-  } else {
-    ws.send(JSON.stringify({ type: 'message', text, room: activeTab }));
-  }
-  inp.value = '';
-}
-function createInvite() {
-  let name = document.getElementById('inviteName').value.trim();
-  if (!name) { alert('Enter a name'); return; }
-  ws.send(JSON.stringify({ type: 'create_invite', invited_name: name }));
-}
-function copyInvite() {
-  navigator.clipboard.writeText(document.getElementById('inviteCode').textContent);
-}
-function leaveRoom() { if(ws) ws.close(); location.reload(); }
+    function connectAndAuth(url, name, roomType) {
+        if (ws && ws.readyState === WebSocket.OPEN) ws.close();
+        ws = new WebSocket(url);
+        ws.onopen = () => {
+            ws.send(JSON.stringify({ type: 'auth', name }));
+        };
+        ws.onmessage = (e) => {
+            const d = JSON.parse(e.data);
+            if (d.type === 'auth_ok') {
+                myName = d.name;
+                currentRoom = roomType === 'public' ? 'public' : document.getElementById('roomName').value.trim().toUpperCase();
+                showChat(roomType);
+            } else if (d.type === 'auth_fail') {
+                const errDiv = roomType === 'public' ? document.getElementById('publicErr') : document.getElementById('secretErr');
+                errDiv.textContent = d.reason;
+                ws.close();
+                ws = null;
+            } else if (d.type === 'message') {
+                const tab = d.room || (roomType === 'public' ? 'public' : currentRoom);
+                if (!tabsData[tab]) tabsData[tab] = { id: tab, label: tab === 'public' ? 'Public' : tab, messages: [] };
+                addMessage(tab, d.sender, d.text, d.sender === myName ? 'me' : 'other', d.time);
+            } else if (d.type === 'system') {
+                const tab = d.room || (roomType === 'public' ? 'public' : currentRoom);
+                if (!tabsData[tab]) tabsData[tab] = { id: tab, label: tab === 'public' ? 'Public' : tab, messages: [] };
+                addMessage(tab, '', d.text, 'system', d.time);
+            } else if (d.type === 'users') {
+                updateRoomUsers(d.users);
+            } else if (d.type === 'online_users') {
+                updateOnlineUsers(d.users);
+            }
+        };
+        ws.onerror = () => {
+            const errDiv = roomType === 'public' ? document.getElementById('publicErr') : document.getElementById('secretErr');
+            errDiv.textContent = 'Connection failed. Is server running?';
+        };
+    }
+
+    function joinPublic() {
+        const name = document.getElementById('publicName').value.trim();
+        if (!name) { document.getElementById('publicErr').textContent = 'Enter your name'; return; }
+        document.getElementById('publicErr').textContent = '';
+        connectAndAuth(`${WS_URL}/ws/public`, name, 'public');
+    }
+
+    function joinSecretRoom() {
+        const name = document.getElementById('secretName').value.trim();
+        const room = document.getElementById('roomName').value.trim();
+        if (!name) { document.getElementById('secretErr').textContent = 'Enter your name'; return; }
+        if (!room) { document.getElementById('secretErr').textContent = 'Enter room name'; return; }
+        document.getElementById('secretErr').textContent = '';
+        connectAndAuth(`${WS_URL}/ws/room/${encodeURIComponent(room)}`, name, 'secret');
+    }
+
+    function showChat(roomType) {
+        document.getElementById('landing').style.display = 'none';
+        document.getElementById('chat').style.display = 'flex';
+        const roomLabel = roomType === 'public' ? 'Public Room' : currentRoom;
+        if (!tabsData[currentRoom]) tabsData[currentRoom] = { id: currentRoom, label: roomLabel, messages: [] };
+        activeTab = currentRoom;
+        document.getElementById('roomTitle').innerText = roomLabel;
+        renderMessages();
+        document.getElementById('headerSub').innerText = 'Connected';
+    }
+
+    function sendMsg() {
+        const inp = document.getElementById('msgInput');
+        const text = inp.value.trim();
+        if (!text || !ws || ws.readyState !== 1) return;
+        ws.send(JSON.stringify({ type: 'message', text, room: activeTab }));
+        inp.value = '';
+    }
+
+    function switchRoom() {
+        const newRoom = document.getElementById('switchRoomName').value.trim();
+        if (!newRoom) return;
+        if (!ws || ws.readyState !== 1) return;
+        ws.send(JSON.stringify({ type: 'join_room', room: newRoom }));
+        currentRoom = newRoom.toUpperCase();
+        if (!tabsData[currentRoom]) tabsData[currentRoom] = { id: currentRoom, label: currentRoom, messages: [] };
+        activeTab = currentRoom;
+        document.getElementById('roomTitle').innerText = currentRoom;
+        renderMessages();
+        document.getElementById('switchRoomName').value = '';
+    }
+
+    function leaveRoom() {
+        if (ws) ws.close();
+        document.getElementById('chat').style.display = 'none';
+        document.getElementById('landing').style.display = 'block';
+        ws = null;
+        tabsData = { public: { id: 'public', label: 'Public', messages: [] } };
+        activeTab = 'public';
+        document.getElementById('messages').innerHTML = '';
+        document.getElementById('userList').innerHTML = '';
+        document.getElementById('onlineList').innerHTML = '';
+    }
 </script>
 </body>
 </html>
