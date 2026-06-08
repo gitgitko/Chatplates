@@ -8,6 +8,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
 sessions = {}          # name -> websocket
 rooms = {}             # room_id -> {name: websocket}
+room_passkeys = {}     # room_id -> passkey (string)
 
 def now():
     return datetime.now().strftime("%I:%M %p")
@@ -47,7 +48,7 @@ async def register_user(ws, name, room_id):
             pass
     return name
 
-# ---------- PUBLIC ROOM ----------
+# ---------- PUBLIC ROOM (no password) ----------
 @app.websocket("/ws/public")
 async def public_endpoint(ws: WebSocket):
     await ws.accept()
@@ -80,14 +81,6 @@ async def public_endpoint(ws: WebSocket):
                 payload = {"type": "message", "sender": name, "text": text, "time": now(), "room": rid}
                 await ws.send_text(json.dumps(payload))
                 await broadcast(rid, payload, exclude=name)
-            elif data.get("type") == "join_room":
-                new_room = data.get("room", "").strip().upper()
-                if new_room:
-                    rooms.setdefault(new_room, {})[name] = ws
-                    room_id = new_room
-                    await ws.send_text(json.dumps({"type": "system", "text": f"You joined room {new_room}.", "time": now()}))
-                    await broadcast(new_room, {"type": "system", "text": f"{name} joined.", "time": now()}, exclude=name)
-                    await broadcast(new_room, {"type": "users", "users": list(rooms[new_room].keys())})
     except WebSocketDisconnect:
         sessions.pop(name, None)
         for rid, members in list(rooms.items()):
@@ -98,6 +91,7 @@ async def public_endpoint(ws: WebSocket):
                     await broadcast(rid, {"type": "users", "users": list(members.keys())})
                 else:
                     del rooms[rid]
+                    room_passkeys.pop(rid, None)
         online = list(sessions.keys())
         for w in sessions.values():
             try:
@@ -105,9 +99,9 @@ async def public_endpoint(ws: WebSocket):
             except:
                 pass
 
-# ---------- SECRET ROOMS (anyone can create/join) ----------
+# ---------- SECRET ROOM (requires passkey) ----------
 @app.websocket("/ws/room/{room_name}")
-async def room_endpoint(ws: WebSocket, room_name: str):
+async def secret_room_endpoint(ws: WebSocket, room_name: str):
     await ws.accept()
     room_id = room_name.strip().upper()
     try:
@@ -121,10 +115,27 @@ async def room_endpoint(ws: WebSocket, room_name: str):
         await ws.close()
         return
     name = auth.get("name", "").strip()[:20]
+    passkey = auth.get("passkey", "").strip()
     if not name:
         await ws.send_text(json.dumps({"type": "auth_fail", "reason": "Name required"}))
         await ws.close()
         return
+    if not passkey:
+        await ws.send_text(json.dumps({"type": "auth_fail", "reason": "Passkey required for secret room"}))
+        await ws.close()
+        return
+    
+    # Check if room already exists
+    if room_id in room_passkeys:
+        # Room exists – verify passkey
+        if room_passkeys[room_id] != passkey:
+            await ws.send_text(json.dumps({"type": "auth_fail", "reason": "Wrong passkey for this room"}))
+            await ws.close()
+            return
+    else:
+        # New room – set passkey
+        room_passkeys[room_id] = passkey
+    
     await register_user(ws, name, room_id)
     try:
         while True:
@@ -138,14 +149,6 @@ async def room_endpoint(ws: WebSocket, room_name: str):
                 payload = {"type": "message", "sender": name, "text": text, "time": now(), "room": rid}
                 await ws.send_text(json.dumps(payload))
                 await broadcast(rid, payload, exclude=name)
-            elif data.get("type") == "join_room":
-                new_room = data.get("room", "").strip().upper()
-                if new_room:
-                    rooms.setdefault(new_room, {})[name] = ws
-                    room_id = new_room
-                    await ws.send_text(json.dumps({"type": "system", "text": f"You joined room {new_room}.", "time": now()}))
-                    await broadcast(new_room, {"type": "system", "text": f"{name} joined.", "time": now()}, exclude=name)
-                    await broadcast(new_room, {"type": "users", "users": list(rooms[new_room].keys())})
     except WebSocketDisconnect:
         sessions.pop(name, None)
         for rid, members in list(rooms.items()):
@@ -156,6 +159,7 @@ async def room_endpoint(ws: WebSocket, room_name: str):
                     await broadcast(rid, {"type": "users", "users": list(members.keys())})
                 else:
                     del rooms[rid]
+                    room_passkeys.pop(rid, None)
         online = list(sessions.keys())
         for w in sessions.values():
             try:
