@@ -6,164 +6,51 @@
     <title>Chatplates – Voice + Text</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: system-ui, 'Segoe UI', sans-serif;
-            background: #0f1117;
-            color: #e2e8f0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .card {
-            background: #1a1d27;
-            border: 1px solid #2e3250;
-            border-radius: 20px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            width: 100%;
-            max-width: 400px;
-        }
-        input, button {
-            width: 100%;
-            padding: 0.7rem;
-            margin-top: 0.5rem;
-            border-radius: 12px;
-            border: none;
-            font-size: 1rem;
-        }
-        input {
-            background: #22263a;
-            color: white;
-            border: 1px solid #2e3250;
-        }
-        button {
-            background: linear-gradient(135deg, #6c63ff, #a78bfa);
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        body { font-family: system-ui, sans-serif; background: #0f1117; color: #e2e8f0; height: 100vh; display: flex; justify-content: center; align-items: center; }
+        .card { background: #1a1d27; border: 1px solid #2e3250; border-radius: 20px; padding: 1.5rem; margin-bottom: 1rem; width: 100%; max-width: 400px; }
+        input, button { width: 100%; padding: 0.7rem; margin-top: 0.5rem; border-radius: 12px; border: none; font-size: 1rem; }
+        input { background: #22263a; color: white; border: 1px solid #2e3250; }
+        button { background: linear-gradient(135deg, #6c63ff, #a78bfa); color: white; font-weight: bold; cursor: pointer; }
         .err { color: #f87171; font-size: 0.8rem; margin-top: 0.3rem; }
-        .badge {
-            font-size: 0.7rem;
-            padding: 0.2rem 0.5rem;
-            border-radius: 20px;
-            margin-left: 0.5rem;
-        }
+        .badge { font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 20px; margin-left: 0.5rem; }
         .badge.public { background: #4ade8022; color: #4ade80; }
         .badge.secret { background: #a78bfa22; color: #a78bfa; }
         #landing { width: 100%; max-width: 440px; padding: 2rem; }
         .logo { text-align: center; margin-bottom: 2rem; }
         .logo h1 { font-size: 2rem; background: linear-gradient(135deg, #6c63ff, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        #chat {
-            display: none;
-            width: 100%;
-            height: 100vh;
-            flex-direction: row;
-        }
-        .sidebar {
-            width: 260px;
-            background: #1a1d27;
-            border-right: 1px solid #2e3250;
-            display: flex;
-            flex-direction: column;
-            padding: 1rem;
-            gap: 1rem;
-        }
+        #chat { display: none; width: 100%; height: 100vh; flex-direction: row; }
+        .sidebar { width: 260px; background: #1a1d27; border-right: 1px solid #2e3250; display: flex; flex-direction: column; padding: 1rem; gap: 1rem; }
         .sidebar h3 { font-size: 0.75rem; color: #8892b0; margin-top: 0.5rem; }
-        #userList, #onlineList {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-        #userList li, #onlineList li {
-            font-size: 0.85rem;
-            padding: 0.2rem 0.3rem;
-            border-radius: 6px;
-        }
+        #userList, #onlineList { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+        #userList li, #onlineList li { font-size: 0.85rem; padding: 0.2rem 0.3rem; border-radius: 6px; }
         #userList li::before { content: "●"; color: #4ade80; margin-right: 0.5rem; }
         #onlineList li::before { content: "👤"; margin-right: 0.5rem; }
-        .main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        .chat-header {
-            padding: 0.8rem 1.2rem;
-            border-bottom: 1px solid #2e3250;
-            background: #1a1d27;
-        }
-        #messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
+        .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+        .chat-header { padding: 0.8rem 1.2rem; border-bottom: 1px solid #2e3250; background: #1a1d27; }
+        #messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
         .msg { display: flex; flex-direction: column; max-width: 70%; }
         .msg.me { align-self: flex-end; align-items: flex-end; }
         .msg.other { align-self: flex-start; }
         .msg.system { align-self: center; max-width: 90%; }
-        .bubble {
-            padding: 0.5rem 0.8rem;
-            border-radius: 16px;
-            background: #22263a;
-        }
+        .bubble { padding: 0.5rem 0.8rem; border-radius: 16px; background: #22263a; }
         .msg.me .bubble { background: #6c63ff; }
         .msg.system .bubble { background: #2e3250; color: #8892b0; font-size: 0.8rem; }
         .meta { font-size: 0.7rem; color: #8892b0; margin-bottom: 0.2rem; }
-        .input-area {
-            padding: 0.8rem;
-            border-top: 1px solid #2e3250;
-            display: flex;
-            gap: 0.5rem;
-            background: #1a1d27;
-        }
-        .input-area input {
-            flex: 1;
-            margin: 0;
-        }
-        .input-area button {
-            width: auto;
-            padding: 0.7rem 1.2rem;
-            margin: 0;
-        }
-        .voice-btn {
-            background: #22263a;
-            border: 1px solid #4ade80;
-            color: #4ade80;
-            cursor: pointer;
-            padding: 0.6rem;
-            margin-top: 0.5rem;
-            border-radius: 8px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            transition: all 0.2s;
-        }
-        .voice-btn.active {
-            background: #4ade80;
-            color: #0f1117;
-            border-color: #4ade80;
-        }
-        .leave-btn {
-            background: transparent;
-            border: 1px solid #f87171;
-            color: #f87171;
-        }
-        .leave-btn:hover {
-            background: #f8717122;
-        }
+        .input-area { padding: 0.8rem; border-top: 1px solid #2e3250; display: flex; gap: 0.5rem; background: #1a1d27; }
+        .input-area input { flex: 1; margin: 0; }
+        .input-area button { width: auto; padding: 0.7rem 1.2rem; margin: 0; }
+        .voice-btn { background: #22263a; border: 1px solid #4ade80; color: #4ade80; cursor: pointer; padding: 0.6rem; margin-top: 0.5rem; border-radius: 8px; font-size: 0.85rem; font-weight: bold; }
+        .voice-btn.active { background: #4ade80; color: #0f1117; }
+        .leave-btn { background: transparent; border: 1px solid #f87171; color: #f87171; margin-top: auto; }
+        .leave-btn:hover { background: #f8717122; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
 </head>
 <body>
 
 <div id="landing">
     <div class="logo"><h1>⚡ Chatplates</h1><p>Text + Voice • Public & Secret Rooms</p></div>
 
-    <!-- Public Room -->
     <div class="card">
         <h2>🌐 Public Room <span class="badge public">Free</span></h2>
         <input type="text" id="publicName" placeholder="Your name">
@@ -171,7 +58,6 @@
         <button onclick="joinPublic()">Enter Public Room</button>
     </div>
 
-    <!-- Secret Room with Passkey -->
     <div class="card">
         <h2>🔒 Secret Room <span class="badge secret">Passkey required</span></h2>
         <input type="text" id="secretName" placeholder="Your name">
@@ -190,12 +76,10 @@
         <h3>All online</h3>
         <ul id="onlineList"></ul>
         <button id="voiceBtn" class="voice-btn">🎤 Start Voice</button>
-        <button class="leave-btn leave-btn-side" onclick="leaveRoom()">← Leave room</button>
+        <button class="leave-btn" onclick="leaveRoom()">← Leave room</button>
     </div>
     <div class="main">
-        <div class="chat-header">
-            <strong id="roomTitle">Room</strong> · <span id="headerSub">Connected</span>
-        </div>
+        <div class="chat-header"><strong id="roomTitle">Room</strong> · <span id="headerSub">Connected</span></div>
         <div id="messages"></div>
         <div class="input-area">
             <input type="text" id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMsg()">
@@ -205,114 +89,83 @@
 </div>
 
 <script>
-    // ---------- CONFIGURATION ----------
-    const WS_URL = 'wss://chatplates.onrender.com'; // CHANGE TO YOUR RENDER URL (no trailing slash)
-    let ws = null;
-    let myName = '';
-    let currentRoom = '';      // 'public' or room name (uppercase)
-    let currentRoomRaw = '';   // original room name for voice
-    let isOwner = false;       // not used, kept for compatibility
+    // 🔥 IMPORTANT: Change this to your actual Render URL (no trailing slash)
+    const WS_URL = 'https://chatplates.onrender.com';
 
-    // ---------- Trystero Voice ----------
-    let voiceActive = false;
+    let ws = null, myName = '', currentRoom = '', currentRoomRaw = '';
+
+    // ---------- PeerJS Voice ----------
+    let peer = null;
     let localStream = null;
-    let trysteroRoom = null;
-    let peerAudios = {};       // peerId -> Audio element
+    let connections = {};
+    let voiceActive = false;
+    let myPeerId = null;
 
-    // Initialize Trystero voice for a room
-    async function initVoice(roomId) {
+    async function initVoice() {
         try {
-            // Dynamic import of Trystero (BitTorrent strategy)
-            const { joinRoom } = await import('https://cdn.jsdelivr.net/npm/@trystero-p2p/torrent@0.26.2/dist/index.min.js');
-            const config = { appId: 'chatplates_voice_v2' };
-            trysteroRoom = joinRoom(config, roomId);
-
-            // Request microphone
-            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-
-            // When a new peer joins, send our stream to them
-            trysteroRoom.onPeerJoin = (peerId) => {
-                if (voiceActive && localStream) {
-                    trysteroRoom.addStream(localStream, peerId);
+            const peerId = `${currentRoomRaw}_${myName}_${Date.now()}`;
+            peer = new Peer(peerId, {
+                host: '0.peerjs.com',
+                port: 443,
+                secure: true
+            });
+            localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            peer.on('open', (id) => {
+                myPeerId = id;
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ type: 'peer_id', peerId: id }));
                 }
-            };
-
-            // When we receive a stream from a peer, play it
-            trysteroRoom.onPeerStream = (stream, peerId) => {
-                if (!peerAudios[peerId]) {
+            });
+            peer.on('call', (call) => {
+                call.answer(localStream);
+                call.on('stream', (stream) => {
                     const audio = new Audio();
                     audio.srcObject = stream;
                     audio.autoplay = true;
-                    peerAudios[peerId] = audio;
-                } else {
-                    // Update existing audio element
-                    peerAudios[peerId].srcObject = stream;
-                }
-            };
-
-            // When a peer leaves, remove their audio
-            trysteroRoom.onPeerLeave = (peerId) => {
-                if (peerAudios[peerId]) {
-                    peerAudios[peerId].pause();
-                    delete peerAudios[peerId];
-                }
-            };
-
+                });
+                connections[call.peer] = call;
+            });
             return true;
         } catch (err) {
             console.error('Voice init failed:', err);
+            alert('Could not start voice: ' + (err.message || 'microphone denied'));
             return false;
         }
     }
 
-    async function startVoice(roomId) {
+    function callPeer(remotePeerId) {
+        if (!voiceActive || !peer || !localStream || connections[remotePeerId]) return;
+        const call = peer.call(remotePeerId, localStream);
+        call.on('stream', (stream) => {
+            const audio = new Audio();
+            audio.srcObject = stream;
+            audio.autoplay = true;
+        });
+        connections[remotePeerId] = call;
+    }
+
+    async function startVoice() {
         if (voiceActive) return;
-        const success = await initVoice(roomId);
-        if (!success) {
-            alert('Could not start voice: microphone access denied or network error.');
-            return;
-        }
-        // Send our stream to all existing peers in the room
-        if (trysteroRoom && localStream) {
-            trysteroRoom.addStream(localStream);
-        }
+        const ok = await initVoice();
+        if (!ok) return;
         voiceActive = true;
-        const btn = document.getElementById('voiceBtn');
-        btn.textContent = '🔴 Mute Voice';
-        btn.classList.add('active');
+        document.getElementById('voiceBtn').textContent = '🔴 Mute Voice';
+        document.getElementById('voiceBtn').classList.add('active');
     }
 
     function stopVoice() {
         if (!voiceActive) return;
-        if (localStream) {
-            localStream.getTracks().forEach(track => track.stop());
-            localStream = null;
-        }
-        if (trysteroRoom) {
-            trysteroRoom.leave();
-            trysteroRoom = null;
-        }
-        // Stop all peer audio elements
-        Object.values(peerAudios).forEach(audio => audio.pause());
-        peerAudios = {};
+        if (localStream) localStream.getTracks().forEach(t => t.stop());
+        if (peer) peer.destroy();
+        connections = {};
         voiceActive = false;
-        const btn = document.getElementById('voiceBtn');
-        btn.textContent = '🎤 Start Voice';
-        btn.classList.remove('active');
+        document.getElementById('voiceBtn').textContent = '🎤 Start Voice';
+        document.getElementById('voiceBtn').classList.remove('active');
     }
 
-    // Toggle voice on button click
     document.getElementById('voiceBtn').addEventListener('click', () => {
-        if (!ws || ws.readyState !== WebSocket.OPEN) {
-            alert('Not connected to a room yet.');
-            return;
-        }
-        if (voiceActive) {
-            stopVoice();
-        } else {
-            // Use the original room name (lowercase for public, original for secret)
-            startVoice(currentRoomRaw);
-        }
+        if (!ws || ws.readyState !== WebSocket.OPEN) return alert('Not connected');
+        voiceActive ? stopVoice() : startVoice();
     });
 
     // ---------- WebSocket Text Chat ----------
@@ -356,26 +209,27 @@
         });
     }
 
-    function connectAndAuth(url, name, passkey = null, roomType, rawRoomName = '') {
+    function connectAndAuth(url, name, passkey, roomType, rawRoomName) {
         if (ws && ws.readyState === WebSocket.OPEN) ws.close();
-        ws = new WebSocket(url);
+        // Convert https -> wss for WebSocket
+        const wsUrl = url.replace('https', 'wss');
+        ws = new WebSocket(wsUrl);
         ws.onopen = () => {
-            const authMsg = { type: 'auth', name };
-            if (passkey !== null) authMsg.passkey = passkey;
-            ws.send(JSON.stringify(authMsg));
+            const msg = { type: 'auth', name };
+            if (passkey) msg.passkey = passkey;
+            ws.send(JSON.stringify(msg));
         };
         ws.onmessage = (e) => {
             const d = JSON.parse(e.data);
             if (d.type === 'auth_ok') {
                 myName = d.name;
                 currentRoom = roomType === 'public' ? 'public' : rawRoomName.toUpperCase();
-                currentRoomRaw = roomType === 'public' ? 'public' : rawRoomName;
+                currentRoomRaw = rawRoomName;
                 showChat(roomType);
             } else if (d.type === 'auth_fail') {
                 const errDiv = roomType === 'public' ? document.getElementById('publicErr') : document.getElementById('secretErr');
                 errDiv.textContent = d.reason;
                 ws.close();
-                ws = null;
             } else if (d.type === 'message') {
                 addMessage(d.sender, d.text, d.sender === myName ? 'me' : 'other', d.time);
             } else if (d.type === 'system') {
@@ -384,45 +238,46 @@
                 updateRoomUsers(d.users);
             } else if (d.type === 'online_users') {
                 updateOnlineUsers(d.users);
+            } else if (d.type === 'peer_id' && voiceActive && d.peerId && d.peerId !== myPeerId) {
+                callPeer(d.peerId);
             }
         };
-        ws.onerror = () => {
-            const errDiv = roomType === 'public' ? document.getElementById('publicErr') : document.getElementById('secretErr');
-            errDiv.textContent = 'Connection failed. Is server running?';
-        };
         ws.onclose = () => {
-            // Stop voice when disconnected
             stopVoice();
+            document.getElementById('headerSub').innerText = 'Disconnected';
+        };
+        ws.onerror = (err) => {
+            console.error('WebSocket error', err);
+            const errDiv = roomType === 'public' ? document.getElementById('publicErr') : document.getElementById('secretErr');
+            errDiv.textContent = 'WebSocket connection failed.';
         };
     }
 
     function joinPublic() {
         const name = document.getElementById('publicName').value.trim();
-        if (!name) { document.getElementById('publicErr').textContent = 'Enter your name'; return; }
-        document.getElementById('publicErr').textContent = '';
-        connectAndAuth(`${WS_URL}/ws/public`, name, null, 'public', 'public');
+        if (!name) return document.getElementById('publicErr').innerText = 'Name required';
+        document.getElementById('publicErr').innerText = '';
+        connectAndAuth(WS_URL, name, null, 'public', 'public');
     }
 
     function joinSecretRoom() {
         const name = document.getElementById('secretName').value.trim();
         const room = document.getElementById('roomName').value.trim();
         const passkey = document.getElementById('roomPasskey').value.trim();
-        if (!name) { document.getElementById('secretErr').textContent = 'Enter your name'; return; }
-        if (!room) { document.getElementById('secretErr').textContent = 'Enter room name'; return; }
-        if (!passkey) { document.getElementById('secretErr').textContent = 'Enter passkey'; return; }
-        document.getElementById('secretErr').textContent = '';
-        connectAndAuth(`${WS_URL}/ws/room/${encodeURIComponent(room)}`, name, passkey, 'secret', room);
+        if (!name) return document.getElementById('secretErr').innerText = 'Name required';
+        if (!room) return document.getElementById('secretErr').innerText = 'Room name required';
+        if (!passkey) return document.getElementById('secretErr').innerText = 'Passkey required';
+        document.getElementById('secretErr').innerText = '';
+        connectAndAuth(WS_URL, name, passkey, 'secret', room);
     }
 
-    function showChat(roomType) {
+    function showChat() {
         document.getElementById('landing').style.display = 'none';
         document.getElementById('chat').style.display = 'flex';
-        const roomLabel = roomType === 'public' ? 'Public Room' : currentRoom;
-        document.getElementById('roomTitle').innerText = roomLabel;
+        document.getElementById('roomTitle').innerText = currentRoom === 'public' ? 'Public Room' : currentRoom;
         document.getElementById('messages').innerHTML = '';
         document.getElementById('headerSub').innerText = 'Connected';
-        // Reset voice state for new room
-        stopVoice();
+        stopVoice();  // fresh voice state for new room
     }
 
     function sendMsg() {
@@ -439,9 +294,6 @@
         document.getElementById('chat').style.display = 'none';
         document.getElementById('landing').style.display = 'block';
         ws = null;
-        document.getElementById('messages').innerHTML = '';
-        document.getElementById('userList').innerHTML = '';
-        document.getElementById('onlineList').innerHTML = '';
     }
 </script>
 </body>
