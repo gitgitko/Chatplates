@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatplates – Rooms</title>
+    <title>Chatplates – Rooms with Passkeys</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -131,20 +131,21 @@
             padding: 0.7rem 1.2rem;
             margin: 0;
         }
-        .room-switch {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            padding: 0 0.8rem 0.8rem;
+        .leave-btn {
+            margin-top: auto;
+            background: transparent;
+            border: 1px solid #f87171;
+            color: #f87171;
         }
-        .room-switch input { flex: 1; margin: 0; }
-        .room-switch button { width: auto; margin: 0; }
+        .leave-btn:hover {
+            background: #f8717122;
+        }
     </style>
 </head>
 <body>
 
 <div id="landing">
-    <div class="logo"><h1>⚡ Chatplates</h1><p>Public room + secret rooms</p></div>
+    <div class="logo"><h1>⚡ Chatplates</h1><p>Public room + secret rooms with passkey</p></div>
 
     <!-- Public Room -->
     <div class="card">
@@ -154,16 +155,15 @@
         <button onclick="joinPublic()">Enter Public Room</button>
     </div>
 
-    <!-- Create / Join Secret Room -->
+    <!-- Secret Room with Passkey -->
     <div class="card">
-        <h2>🔒 Secret Room <span class="badge secret">Create or join</span></h2>
+        <h2>🔒 Secret Room <span class="badge secret">Passkey required</span></h2>
         <input type="text" id="secretName" placeholder="Your name">
+        <input type="text" id="roomName" placeholder="Room name (e.g., gamers)">
+        <input type="password" id="roomPasskey" placeholder="Passkey">
         <div class="err" id="secretErr"></div>
-        <div class="room-switch" style="margin:0.5rem 0 0 0; padding:0;">
-            <input type="text" id="roomName" placeholder="Room name (e.g., gamers)">
-            <button onclick="joinSecretRoom()">Join</button>
-        </div>
-        <small style="color:#8892b0;">If room doesn't exist, it will be created.</small>
+        <button onclick="joinSecretRoom()">Join / Create Secret Room</button>
+        <small style="color:#8892b0;">If room doesn't exist, it will be created with this passkey.</small>
     </div>
 </div>
 
@@ -173,7 +173,7 @@
         <ul id="userList"></ul>
         <h3>All online</h3>
         <ul id="onlineList"></ul>
-        <button class="leave-btn" onclick="leaveRoom()" style="margin-top: auto;">← Leave room</button>
+        <button class="leave-btn" onclick="leaveRoom()">← Leave room</button>
     </div>
     <div class="main">
         <div class="chat-header">
@@ -184,51 +184,28 @@
             <input type="text" id="msgInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendMsg()">
             <button onclick="sendMsg()">Send</button>
         </div>
-        <div class="room-switch">
-            <input type="text" id="switchRoomName" placeholder="Switch to another room">
-            <button onclick="switchRoom()">Switch</button>
-        </div>
     </div>
 </div>
 
 <script>
-    const WS_URL = 'wss://chatplates.onrender.com';  // CHANGE THIS to your Render URL (no trailing slash)
+    const WS_URL = 'wss://chatplates.onrender.com';  // CHANGE to your Render URL (no trailing slash)
     let ws = null, myName = '', currentRoom = '';
-    let tabsData = { public: { id: 'public', label: 'Public', messages: [] } };
-    let activeTab = 'public';
 
-    function openTab(id) {
-        activeTab = id;
-        renderMessages();
-        document.getElementById('roomTitle').innerText = tabsData[id].label;
-        document.getElementById('msgInput').placeholder = `Message in ${tabsData[id].label}...`;
-    }
-
-    function addMessage(tabId, sender, text, type, time) {
-        if (!tabsData[tabId]) return;
-        tabsData[tabId].messages.push({ sender, text, type, time });
-        if (activeTab === tabId) renderMessages();
-    }
-
-    function renderMessages() {
+    function addMessage(sender, text, type, time) {
         const container = document.getElementById('messages');
-        container.innerHTML = '';
-        const msgs = tabsData[activeTab]?.messages || [];
-        msgs.forEach(m => {
-            const div = document.createElement('div');
-            div.className = `msg ${m.type}`;
-            if (m.type !== 'system') {
-                const meta = document.createElement('div');
-                meta.className = 'meta';
-                meta.innerHTML = (m.type === 'me' ? 'You' : m.sender) + ' · ' + m.time;
-                div.appendChild(meta);
-            }
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            bubble.textContent = m.text;
-            div.appendChild(bubble);
-            container.appendChild(div);
-        });
+        const div = document.createElement('div');
+        div.className = `msg ${type}`;
+        if (type !== 'system') {
+            const meta = document.createElement('div');
+            meta.className = 'meta';
+            meta.innerHTML = (type === 'me' ? 'You' : sender) + ' · ' + time;
+            div.appendChild(meta);
+        }
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.textContent = text;
+        div.appendChild(bubble);
+        container.appendChild(div);
         container.scrollTop = container.scrollHeight;
     }
 
@@ -254,17 +231,18 @@
         });
     }
 
-    function connectAndAuth(url, name, roomType) {
+    function connectAndAuth(url, name, passkey = null, roomType) {
         if (ws && ws.readyState === WebSocket.OPEN) ws.close();
         ws = new WebSocket(url);
         ws.onopen = () => {
-            ws.send(JSON.stringify({ type: 'auth', name }));
+            const authMsg = { type: 'auth', name };
+            if (passkey !== null) authMsg.passkey = passkey;
+            ws.send(JSON.stringify(authMsg));
         };
         ws.onmessage = (e) => {
             const d = JSON.parse(e.data);
             if (d.type === 'auth_ok') {
                 myName = d.name;
-                currentRoom = roomType === 'public' ? 'public' : document.getElementById('roomName').value.trim().toUpperCase();
                 showChat(roomType);
             } else if (d.type === 'auth_fail') {
                 const errDiv = roomType === 'public' ? document.getElementById('publicErr') : document.getElementById('secretErr');
@@ -272,13 +250,9 @@
                 ws.close();
                 ws = null;
             } else if (d.type === 'message') {
-                const tab = d.room || (roomType === 'public' ? 'public' : currentRoom);
-                if (!tabsData[tab]) tabsData[tab] = { id: tab, label: tab === 'public' ? 'Public' : tab, messages: [] };
-                addMessage(tab, d.sender, d.text, d.sender === myName ? 'me' : 'other', d.time);
+                addMessage(d.sender, d.text, d.sender === myName ? 'me' : 'other', d.time);
             } else if (d.type === 'system') {
-                const tab = d.room || (roomType === 'public' ? 'public' : currentRoom);
-                if (!tabsData[tab]) tabsData[tab] = { id: tab, label: tab === 'public' ? 'Public' : tab, messages: [] };
-                addMessage(tab, '', d.text, 'system', d.time);
+                addMessage('', d.text, 'system', d.time);
             } else if (d.type === 'users') {
                 updateRoomUsers(d.users);
             } else if (d.type === 'online_users') {
@@ -295,26 +269,27 @@
         const name = document.getElementById('publicName').value.trim();
         if (!name) { document.getElementById('publicErr').textContent = 'Enter your name'; return; }
         document.getElementById('publicErr').textContent = '';
-        connectAndAuth(`${WS_URL}/ws/public`, name, 'public');
+        connectAndAuth(`${WS_URL}/ws/public`, name, null, 'public');
     }
 
     function joinSecretRoom() {
         const name = document.getElementById('secretName').value.trim();
         const room = document.getElementById('roomName').value.trim();
+        const passkey = document.getElementById('roomPasskey').value.trim();
         if (!name) { document.getElementById('secretErr').textContent = 'Enter your name'; return; }
         if (!room) { document.getElementById('secretErr').textContent = 'Enter room name'; return; }
+        if (!passkey) { document.getElementById('secretErr').textContent = 'Enter passkey'; return; }
         document.getElementById('secretErr').textContent = '';
-        connectAndAuth(`${WS_URL}/ws/room/${encodeURIComponent(room)}`, name, 'secret');
+        currentRoom = room.toUpperCase();
+        connectAndAuth(`${WS_URL}/ws/room/${encodeURIComponent(room)}`, name, passkey, 'secret');
     }
 
     function showChat(roomType) {
         document.getElementById('landing').style.display = 'none';
         document.getElementById('chat').style.display = 'flex';
         const roomLabel = roomType === 'public' ? 'Public Room' : currentRoom;
-        if (!tabsData[currentRoom]) tabsData[currentRoom] = { id: currentRoom, label: roomLabel, messages: [] };
-        activeTab = currentRoom;
         document.getElementById('roomTitle').innerText = roomLabel;
-        renderMessages();
+        document.getElementById('messages').innerHTML = '';
         document.getElementById('headerSub').innerText = 'Connected';
     }
 
@@ -322,21 +297,8 @@
         const inp = document.getElementById('msgInput');
         const text = inp.value.trim();
         if (!text || !ws || ws.readyState !== 1) return;
-        ws.send(JSON.stringify({ type: 'message', text, room: activeTab }));
+        ws.send(JSON.stringify({ type: 'message', text }));
         inp.value = '';
-    }
-
-    function switchRoom() {
-        const newRoom = document.getElementById('switchRoomName').value.trim();
-        if (!newRoom) return;
-        if (!ws || ws.readyState !== 1) return;
-        ws.send(JSON.stringify({ type: 'join_room', room: newRoom }));
-        currentRoom = newRoom.toUpperCase();
-        if (!tabsData[currentRoom]) tabsData[currentRoom] = { id: currentRoom, label: currentRoom, messages: [] };
-        activeTab = currentRoom;
-        document.getElementById('roomTitle').innerText = currentRoom;
-        renderMessages();
-        document.getElementById('switchRoomName').value = '';
     }
 
     function leaveRoom() {
@@ -344,8 +306,6 @@
         document.getElementById('chat').style.display = 'none';
         document.getElementById('landing').style.display = 'block';
         ws = null;
-        tabsData = { public: { id: 'public', label: 'Public', messages: [] } };
-        activeTab = 'public';
         document.getElementById('messages').innerHTML = '';
         document.getElementById('userList').innerHTML = '';
         document.getElementById('onlineList').innerHTML = '';
